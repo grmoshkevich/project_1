@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './user.entity';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -12,9 +12,15 @@ export class UsersService {
     private usersRepository: Repository<User>,
     private dataSource: DataSource
   ) {}
+
+  async create(createUserDto: CreateUserDto) {
+    console.log('%c⧭', 'color: #917399', createUserDto);
+    await this.dataSource.transaction(async manager => {
+      const user = manager.create(User, createUserDto)
+      await manager.save(user);
+      // await manager.save(users[1]);
+    });
   
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
   }
 
   findAll(): Promise<User[]> {
@@ -33,17 +39,24 @@ export class UsersService {
     await this.usersRepository.delete(id);
   }
 
-  async createMany(users: User[]) {
+  async createMany() {
     const queryRunner = this.dataSource.createQueryRunner();
   
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      await queryRunner.manager.save(users[0]);
-      await queryRunner.manager.save(users[1]);
+      const user: CreateUserDto = {
+        id: 1,
+        username: 'bananaman',
+        isActive: true,
+        password: '123',
+      }
+      await queryRunner.manager.save(user);
+      // await queryRunner.manager.save(users[1]);
   
       await queryRunner.commitTransaction();
     } catch (err) {
+      console.log('%c⧭', 'color: #0088cc', err);
       // since we have errors lets rollback the changes we made
       await queryRunner.rollbackTransaction();
     } finally {
