@@ -1,9 +1,9 @@
 // database.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/user.entity';
-import { Post } from './posts/post.entity';
-import { Vote } from './votes/vote.entity';
+import { User } from './users/entities/user.entity';
+import { Post } from './posts/entities/post.entity';
+import { Vote } from './votes/entities/vote.entity';
 
 @Module({
   imports: [
