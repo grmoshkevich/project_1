@@ -10,17 +10,13 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    private dataSource: DataSource
+    // private dataSource: DataSource
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     console.log('%c⧭', 'color: #917399', createUserDto);
-    await this.dataSource.transaction(async manager => {
-      const user = manager.create(User, createUserDto)
-      await manager.save(user);
-      // await manager.save(users[1]);
-    });
-  
+    const user = this.usersRepository.create(createUserDto);
+    return this.usersRepository.save(user);
   }
 
   findAll(): Promise<User[]> {
@@ -39,30 +35,28 @@ export class UsersService {
     await this.usersRepository.delete(id);
   }
 
-  async createMany() {
-    const queryRunner = this.dataSource.createQueryRunner();
+  // async createMany() {
+  //   const queryRunner = this.dataSource.createQueryRunner();
   
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    try {
-      const user: CreateUserDto = {
-        id: 1,
-        username: 'bananaman',
-        isActive: true,
-        password: '123',
-      }
-      await queryRunner.manager.save(user);
-      // await queryRunner.manager.save(users[1]);
+  //   await queryRunner.connect();
+  //   await queryRunner.startTransaction();
+  //   try {
+  //     const user: CreateUserDto = {
+  //       username: 'bananaman',
+  //       password: '123',
+  //     }
+  //     await queryRunner.manager.save(user);
+  //     // await queryRunner.manager.save(users[1]);
   
-      await queryRunner.commitTransaction();
-    } catch (err) {
-      console.log('%c⧭', 'color: #0088cc', err);
-      // since we have errors lets rollback the changes we made
-      await queryRunner.rollbackTransaction();
-    } finally {
-      // you need to release a queryRunner which was manually instantiated
-      await queryRunner.release();
-    }
-  }
+  //     await queryRunner.commitTransaction();
+  //   } catch (err) {
+  //     console.log('%c⧭', 'color: #0088cc', err);
+  //     // since we have errors lets rollback the changes we made
+  //     await queryRunner.rollbackTransaction();
+  //   } finally {
+  //     // you need to release a queryRunner which was manually instantiated
+  //     await queryRunner.release();
+  //   }
+  // }
   
 }
