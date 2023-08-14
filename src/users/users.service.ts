@@ -4,6 +4,7 @@ import { DataSource, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -13,30 +14,30 @@ export class UsersService {
     // private dataSource: DataSource
   ) {}
   
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-    },
-  ];
+  // private readonly users = [
+  //   {
+  //     userId: 1,
+  //     username: 'john',
+  //     password: 'changeme',
+  //   },
+  //   {
+  //     userId: 2,
+  //     username: 'monkeyboy',
+  //     password: '$2b$10$OazGA5.ePu08alQnBg3dOeBRcf6N2XfGtwLfhNWpl.nTXRrC/bXgq',
+  //   },
+  // ];
 
-  async findOne(username: string): Promise<any> {
-    return this.users.find(user => user.username === username);
-  }
+  // async findOne(username: string): Promise<any> {
+  //   return this.users.find(user => user.username === username);
+  // }
 
-  findOne0(id: number): Promise<User | null> {
+  findOne(id: number): Promise<User | null> {
     return this.usersRepository.findOneBy({ id });
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    console.log('%c⧭', 'color: #917399', createUserDto);
-    const user = this.usersRepository.create(createUserDto);
+    const hashedPassword = await hash(createUserDto.password, 10);
+    const user = this.usersRepository.create({ ...createUserDto, password: hashedPassword });
     return this.usersRepository.save(user);
   }
 

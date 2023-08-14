@@ -9,6 +9,7 @@ export class UsersController {
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
+    console.log('%c⧭', 'color: #1d5673', 'yooo');
     return this.usersService.create(createUserDto);
   }
 
@@ -19,7 +20,7 @@ export class UsersController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne0(+id);
+    return this.usersService.findOne(+id);
   }
 
   @Patch(':id')
