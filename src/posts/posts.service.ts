@@ -19,8 +19,8 @@ export class PostsService {
   //   return 'This action adds a new post';
   // }
 
-  findAll() {
-    return `This action returns all posts`;
+  findAll(): Promise<Post[]> {
+    return this.postRepository.find();
   }
 
   findOne(id: number) {

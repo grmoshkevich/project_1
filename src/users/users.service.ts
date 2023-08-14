@@ -12,6 +12,27 @@ export class UsersService {
     private usersRepository: Repository<User>,
     // private dataSource: DataSource
   ) {}
+  
+  private readonly users = [
+    {
+      userId: 1,
+      username: 'john',
+      password: 'changeme',
+    },
+    {
+      userId: 2,
+      username: 'maria',
+      password: 'guess',
+    },
+  ];
+
+  async findOne(username: string): Promise<any> {
+    return this.users.find(user => user.username === username);
+  }
+
+  findOne0(id: number): Promise<User | null> {
+    return this.usersRepository.findOneBy({ id });
+  }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     console.log('%c⧭', 'color: #917399', createUserDto);
@@ -23,10 +44,11 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  findOne(id: number): Promise<User | null> {
-    return this.usersRepository.findOneBy({ id });
-  }
 
+  async findByUsername(username: string): Promise<User | undefined> {
+    return this.usersRepository.findOneBy({ username });
+  }
+  
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
