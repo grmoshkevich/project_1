@@ -14,6 +14,7 @@ export class VotesController {
   @Post()
   @HttpCode(200)
   create(@Body() createVoteDto: CreateVoteDto, @User() user: UserEntity) {
+    console.log('%c⧭', 'color: #735656', 'hiiopopo');
     return this.votesService.create(createVoteDto, user);
   }
 

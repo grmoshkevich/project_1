@@ -43,8 +43,11 @@ export class VotesService {
         post.downvotes++;
       }
 
+      await this.postRepository.save(post);
       await this.voteRepository.save(newVote);
+      console.log('%c⧭', 'color: #ffcc00', 'ytoooo', voteType);
       return voteType;
+      console.log('%c⧭', 'color: #99adcc', 'bsa');
     } else {
       // Update the existing vote
       if (existingVote.voteType !== voteType) {

@@ -13,6 +13,7 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createPostDto: CreatePostDto, @User() user: UserEntity) {
+    console.log('%c⧭', 'color: #cc0088', 'asd');
     return this.postsService.create(createPostDto, user);
   }
 
