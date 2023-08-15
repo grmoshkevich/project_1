@@ -4,14 +4,15 @@ import { Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class PostsService {
   constructor(@InjectRepository(Post) private readonly postRepository: Repository<Post>) {}
 
-  async create(createPostDto: CreatePostDto): Promise<Post> {
-    console.log('%c⧭', 'color: #d90000', createPostDto);
-    const newPost = this.postRepository.create(createPostDto);
+  async create(createPostDto: CreatePostDto, user: User): Promise<Post> {
+    console.log('%c⧭', 'color: #d90000', createPostDto, user);
+    const newPost = this.postRepository.create({...createPostDto, author: user});
     return await this.postRepository.save(newPost);
   }
 
@@ -23,8 +24,12 @@ export class PostsService {
     return this.postRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  // findOne(id: number) {
+  //   return `This action returns a #${id} post`;
+  // }
+
+  findOne(id: number): Promise<Post | null> {
+    return this.postRepository.findOneBy({ id });
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {

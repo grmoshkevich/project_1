@@ -1,15 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpCode } from '@nestjs/common';
 import { VotesService } from './votes.service';
 import { CreateVoteDto } from './dto/create-vote.dto';
 import { UpdateVoteDto } from './dto/update-vote.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { User } from 'src/user.decorator';
+import { User as UserEntity } from 'src/users/entities/user.entity';
 
 @Controller('votes')
 export class VotesController {
   constructor(private readonly votesService: VotesService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createVoteDto: CreateVoteDto) {
-    return this.votesService.create(createVoteDto);
+  @HttpCode(200)
+  create(@Body() createVoteDto: CreateVoteDto, @User() user: UserEntity) {
+    return this.votesService.create(createVoteDto, user);
   }
 
   @Get()

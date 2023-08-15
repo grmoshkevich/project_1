@@ -10,7 +10,7 @@ import { hash } from 'bcrypt';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private userRepository: Repository<User>,
     // private dataSource: DataSource
   ) {}
   
@@ -32,22 +32,22 @@ export class UsersService {
   // }
 
   findOne(id: number): Promise<User | null> {
-    return this.usersRepository.findOneBy({ id });
+    return this.userRepository.findOneBy({ id });
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const hashedPassword = await hash(createUserDto.password, 10);
-    const user = this.usersRepository.create({ ...createUserDto, password: hashedPassword });
-    return this.usersRepository.save(user);
+    const user = this.userRepository.create({ ...createUserDto, password: hashedPassword });
+    return this.userRepository.save(user);
   }
 
   findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+    return this.userRepository.find();
   }
 
 
   async findByUsername(username: string): Promise<User | undefined> {
-    return this.usersRepository.findOneBy({ username });
+    return this.userRepository.findOneBy({ username });
   }
   
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -55,7 +55,7 @@ export class UsersService {
   }
 
   async remove(id: number): Promise<void> {
-    await this.usersRepository.delete(id);
+    await this.userRepository.delete(id);
   }
 
   // async createMany() {

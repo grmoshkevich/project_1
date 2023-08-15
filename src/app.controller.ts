@@ -21,7 +21,7 @@ export class AppController {
     return req.user;
   }
 
-  // @UseGuards(LocalAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Get()
   getHello(): string {
     return this.appService.getHello();
