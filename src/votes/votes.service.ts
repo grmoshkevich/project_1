@@ -17,8 +17,7 @@ export class VotesService {
   //   return 'This action adds a new vote';
   // }
 
-  async create(createVoteDto: CreateVoteDto, user: User): Promise<string | null> {
-    console.log('%c⧭', 'color: #d90000', CreateVoteDto, user);
+  async create(createVoteDto: CreateVoteDto, user: User): Promise<Vote | null> {
     const {voteType, postId} = createVoteDto;
     const post = await this.postRepository.findOneBy({ id: postId });
     if (!post) {
@@ -27,9 +26,10 @@ export class VotesService {
 
     const existingVote = await this.voteRepository.findOne({
       where: { user, post },
+      select: ['id', 'voteType', 'postId', 'userId']
     });
+    console.log('%c⧭', 'color: #994d75', existingVote);
     if (!existingVote) {
-      console.log('%c⧭', 'color: #997326', 'non existing');
       // Create a new vote
       const newVote = new Vote();
       newVote.user = user;
@@ -43,15 +43,15 @@ export class VotesService {
         post.downvotes++;
       }
 
+      post.totalvotes = post.upvotes - post.downvotes;
       await this.postRepository.save(post);
       await this.voteRepository.save(newVote);
-      console.log('%c⧭', 'color: #ffcc00', 'ytoooo', voteType);
-      return voteType;
-      console.log('%c⧭', 'color: #99adcc', 'bsa');
+      delete newVote.post;
+      delete newVote.user;
+      return newVote;
     } else {
       // Update the existing vote
       if (existingVote.voteType !== voteType) {
-        console.log('%c⧭', 'color: #997326', 'different type');
         existingVote.voteType = voteType
         if (voteType === 'upvote') {
           post.upvotes++;
@@ -60,23 +60,27 @@ export class VotesService {
           post.downvotes++;
           post.upvotes--;
         }
+        post.totalvotes = post.upvotes - post.downvotes;
         await this.postRepository.save(post);
         await this.voteRepository.save(existingVote);
-        return voteType
+        console.log('%c⧭', 'color: #7f2200', existingVote);
+        return existingVote
       } else {
-        console.log('%c⧭', 'color: #997326', 'same type');
         await this.voteRepository.remove(existingVote);
         if (voteType === 'upvote') {
           post.upvotes--;
         } else if (voteType === 'downvote') {
           post.downvotes--;
         }
-        console.log('%c⧭', 'color: #bfffc8', 11);
+        post.totalvotes = post.upvotes - post.downvotes;
         await this.postRepository.save(post);
-        console.log('%c⧭', 'color: #1d3f73', 2);
         return null;
       }
     }
+  }
+
+  async getVotes(userId: number): Promise<Vote[]> {
+    return this.voteRepository.findBy({ userId })
   }
 
   findAll() {

@@ -10,8 +10,14 @@ export class Vote {
   @Column()
   voteType: 'upvote' | 'downvote';
 
+  @Column({ nullable: true })
+  userId: number
+
   @ManyToOne(() => User)
   user: User;
+
+  @Column({ nullable: true })
+  postId: number
 
   @ManyToOne(() => Post)
   post: Post;

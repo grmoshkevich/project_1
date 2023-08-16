@@ -13,13 +13,18 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createPostDto: CreatePostDto, @User() user: UserEntity) {
-    console.log('%c⧭', 'color: #cc0088', 'asd');
     return this.postsService.create(createPostDto, user);
   }
 
-  @Get()
-  findAll() {
-    return this.postsService.findAll();
+  @Get('public')
+  findAllPublic() {
+    return this.postsService.findAllPublic();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('for-user')
+  findAllForUser(@User() user: UserEntity) {
+    return this.postsService.findAllForUser(user);
   }
 
   @Get(':id')

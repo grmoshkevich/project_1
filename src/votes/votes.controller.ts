@@ -14,13 +14,12 @@ export class VotesController {
   @Post()
   @HttpCode(200)
   create(@Body() createVoteDto: CreateVoteDto, @User() user: UserEntity) {
-    console.log('%c⧭', 'color: #735656', 'hiiopopo');
     return this.votesService.create(createVoteDto, user);
   }
 
-  @Get()
-  findAll() {
-    return this.votesService.findAll();
+  @Get(':userId')
+  findAll(@Param('userId') userId: number) {
+    return this.votesService.getVotes(userId);
   }
 
   @Get(':id')

@@ -11,7 +11,6 @@ export class PostsService {
   constructor(@InjectRepository(Post) private readonly postRepository: Repository<Post>) {}
 
   async create(createPostDto: CreatePostDto, user: User): Promise<Post> {
-    console.log('%c⧭', 'color: #d90000', createPostDto, user);
     const newPost = this.postRepository.create({...createPostDto, author: user});
     return await this.postRepository.save(newPost);
   }
@@ -20,8 +19,20 @@ export class PostsService {
   //   return 'This action adds a new post';
   // }
 
-  findAll(): Promise<Post[]> {
+  findAllPublic(): Promise<Post[]> {
     return this.postRepository.find();
+  }
+
+  async findAllForUser(user: User): Promise<Post[]> {
+    const posts = await this.postRepository
+      .createQueryBuilder('post')
+      .leftJoin('post.votes', 'vote', 'vote.userId = :userId', { userId: user.id })
+      .addSelect('vote.voteType')
+      .orderBy('post.totalvotes', "DESC")
+      .getMany();
+
+
+    return posts;
   }
 
   // findOne(id: number) {
