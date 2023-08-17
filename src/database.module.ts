@@ -4,17 +4,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
 import { Post } from './posts/entities/post.entity';
 import { Vote } from './votes/entities/vote.entity';
+import { ConfigModule } from '@nestjs/config';
+
+console.log('%c⧭', 'color: #e5de73', process.env.DB_HOST);
+
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: process.env.DB_HOST,
       port: 5432,
-      password: 'postgres',
-      username: 'postgres',
+      password: process.env.DB_PASSWORD,
+      username: process.env.DB_USERNAME,
       entities: [User, Post, Vote],
-      database: 'project_1db',
+      database: process.env.DB_NAME,
       synchronize: true,
       logging: true,
     })
