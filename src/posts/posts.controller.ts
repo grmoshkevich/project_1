@@ -24,6 +24,7 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   @Get('for-user')
   findAllForUser(@User() user: UserEntity) {
+    console.log('%c⧭', 'color: #ffa280', 'for this user', user);
     return this.postsService.findAllForUser(user);
   }
 

@@ -6,9 +6,6 @@ import { Post } from './posts/entities/post.entity';
 import { Vote } from './votes/entities/vote.entity';
 import { ConfigModule } from '@nestjs/config';
 
-console.log('%c⧭', 'color: #e5de73', process.env.DB_HOST);
-
-
 @Module({
   imports: [
     ConfigModule.forRoot(),

@@ -17,7 +17,7 @@ export class AppController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    console.log('%c⧭', 'color: #007300', req.user);
+    console.log('%c⧭', 'color: #007300', 'yaa', req.user);
     return req.user;
   }
 
