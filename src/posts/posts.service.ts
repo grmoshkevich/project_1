@@ -20,7 +20,11 @@ export class PostsService {
   // }
 
   findAllPublic(): Promise<Post[]> {
-    return this.postRepository.find();
+    return this.postRepository.find({
+      order: {
+        totalvotes: "DESC",
+      }
+    });
   }
 
   async findAllForUser(user: User): Promise<Post[]> {
